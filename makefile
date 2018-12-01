@@ -6,9 +6,9 @@ CXXFLAGS += -Wall
 CXXFLAGS += -pedantic-errors
 CXXFLAGS += -g
 
-OBJS = main.o Menu.o Game.o Space.o
-SRCS = main.cpp Menu.cpp Game.cpp Space.cpp
-HEADERS = Menu.hpp Game.hpp Space.hpp
+OBJS = main.o Brush.o Camp.o Clearing.o Game.o Menu.o Pack.o Peak.o Player.o Space.o
+SRCS = main.cpp Brush.cpp Camp.cpp Clearing.cpp Game.cpp Menu.cpp Pack.cpp Peak.cpp Player.cpp Space.cpp
+HEADERS = Brush.hpp Camp.hpp Clearing.hpp Game.hpp Menu.hpp Pack.hpp Peak.hpp Player.hpp Space.hpp
 
 finalproject: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o finalproject

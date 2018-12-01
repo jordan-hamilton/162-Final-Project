@@ -1,24 +1,23 @@
-#include "Space.hpp"
+#include "Pack.hpp"
 
 /***********************************************************************************************
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
-Space::Space() {
-  top = nullptr, right = nullptr, left = nullptr, bottom = nullptr;
-  energyCost = 1;
+Pack::Pack() {
+  itemLimit = 10;
 }
 
 
-Space::~Space() {
+Pack::~Pack() {
   
 }
 
 
-int Space::getEnergyCost() {
-  return energyCost;
+int Pack::getItemLimit() {
+  return itemLimit;
 }
 
 
-void Space::setEnergyCost(int cost) {
-  energyCost = cost;
+void Pack::setItemLimit(int limit) {
+  itemLimit = limit;
 }

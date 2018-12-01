@@ -2,19 +2,24 @@
 ** Description: Specification file for the Player class.
 *********************************************************************/
 
-#ifndef GAME_HPP
-#define GAME_HPP
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
+
+#include "Pack.hpp"
 
 class Player {
 
   public:
     Player();
     ~Player();
+    bool hasEnergy();
     int getEnergy();
     void setEnergy(int energyLeft);
 
   private:
+    Pack backpack;
     int energy;
+    int xCoordinate, yCoordinate;
 
 };
 

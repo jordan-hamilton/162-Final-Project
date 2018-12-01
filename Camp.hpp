@@ -10,6 +10,7 @@
 class Camp : public Space {
 
   public:
+    Camp();
     void search() override;
 
   private:

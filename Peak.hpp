@@ -10,6 +10,7 @@
 class Peak : public Space {
 
   public:
+    Peak();
     void search() override;
 
   private:

@@ -10,6 +10,7 @@
 class Brush : public Space {
 
   public:
+    Brush();
     void search() override;
 
   private:

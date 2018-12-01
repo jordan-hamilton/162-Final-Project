@@ -10,6 +10,7 @@
 class Clearing : public Space {
 
   public:
+    Clearing();
     void search() override;
 
   private:

@@ -16,12 +16,16 @@ class Player {
     ~Player();
     bool hasEnergy();
     int getEnergy();
+    int getRow();
+    int getCol();
     void setEnergy(int energyLeft);
+    void setRow(int rowIn);
+    void setCol(int colIn);
 
   private:
-    Pack backpack;
+    Pack* backpack;
     int energy;
-    int xCoordinate, yCoordinate;
+    int row, col;
 
 };
 

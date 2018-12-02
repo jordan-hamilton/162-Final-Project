@@ -6,12 +6,18 @@ using std::stack;
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Player::Player() {
+  backpack = nullptr;
   energy = 100;
-  xCoordinate = 0, yCoordinate = 0;
+  row = 0, col = 0;
 }
 
 
 Player::~Player() {
+
+  if (backpack) {
+    delete backpack;
+    backpack = nullptr;
+  }
 
 }
 
@@ -36,6 +42,26 @@ int Player::getEnergy() {
 }
 
 
+int Player::getRow() {
+  return row;
+}
+
+
+int Player::getCol() {
+  return col;
+}
+
+
 void Player::setEnergy(int energyLeft) {
   energy = energyLeft;
+}
+
+
+void Player::setRow(int rowIn) {
+  row = rowIn;
+}
+
+
+void Player::setCol(int colIn) {
+  col = colIn;
 }

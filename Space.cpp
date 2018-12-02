@@ -7,6 +7,11 @@ using std::string;
 ***********************************************************************************************/
 Space::Space() {
   north = nullptr, east = nullptr, west = nullptr, south = nullptr;
+  hikerHere = false;
+  playerHere = false;
+  discovered = false;
+  searched = false;
+  icon ='\0';
   energyCost = 1;
   type = "";
 }
@@ -17,8 +22,36 @@ Space::~Space() {
 }
 
 
+bool Space::isHikerHere() {
+  return hikerHere;
+}
+
+
 bool Space::isPlayerHere() {
   return playerHere;
+}
+
+
+bool Space::wasDiscovered() {
+  return discovered;
+}
+
+
+bool Space::wasSearched() {
+  return searched;
+}
+
+
+char Space::getIcon() {
+
+  if (playerHere) {
+    return '*';
+  } else if (discovered) {
+    return icon;
+  } else {
+    return '?';
+  }
+
 }
 
 
@@ -42,18 +75,43 @@ Space* Space::getEast() {
 }
 
 
-Space* Space::getWest() {
-  return west;
-}
-
-
 Space* Space::getSouth() {
   return south;
 }
 
 
-void Space::setPlayerHere(bool presence) {
-  playerHere = presence;
+Space* Space::getWest() {
+  return west;
+}
+
+
+void Space::setHikerHere(bool presenceStatus) {
+  hikerHere = presenceStatus;
+}
+
+
+void Space::setPlayerHere(bool presenceStatus) {
+  playerHere = presenceStatus;
+
+  if (playerHere) {
+    discovered = true;
+  }
+  
+}
+
+
+void Space::setDiscovered(bool discoveryStatus) {
+  discovered = discoveryStatus;
+}
+
+
+void Space::setSearched(bool searchStatus) {
+  searched = searchStatus;
+}
+
+
+void Space::setIcon(char iconIn) {
+  icon = iconIn;
 }
 
 
@@ -77,11 +135,11 @@ void Space::setEast(Space* eastIn) {
 }
 
 
-void Space::setWest(Space* westIn) {
-  west = westIn;
+void Space::setSouth(Space* southIn) {
+  south = southIn;
 }
 
 
-void Space::setSouth(Space* southIn) {
-  south = southIn;
+void Space::setWest(Space* westIn) {
+  west = westIn;
 }

@@ -5,6 +5,9 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+#include <iostream>
+#include <string>
+
 #include "Brush.hpp"
 #include "Camp.hpp"
 #include "Clearing.hpp"
@@ -17,12 +20,17 @@ class Game {
   public:
     Game();
     ~Game();
+    void play();
 
   private:
     int maxRows, maxCols;
     void createMap();
+    void cleanMap();
+    void endGame();
+    void printMap();
     void setStartingLocation();
     int generateNumber(const int &max);
+    Player* player;
     Space*** map;
 
 };

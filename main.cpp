@@ -31,27 +31,24 @@ int main() {
 
   int choice;
   string scenario;
-  Game newGame;
 
   unsigned seed = time(0);
   srand(seed);
 
-  unique_ptr<Menu> mainMenu( new Menu() );
-  populateMenu(mainMenu);
+  unique_ptr<Game> wildernessGame( new Game() );
 
-  scenario = "\nWelcome to Search & Rescue!\n\nYou're a wilderness survival expert searching for \
-a lost hiker.\nYour goal is to explore the wilderness in search of the lost hiker before you \
-run out of energy.\n";
+  unique_ptr<Menu> mainMenu( new Menu("Search & Rescue\nSelect an option to continue:") );
+  populateMenu(mainMenu);
 
   do {
 
-    choice = mainMenu->getIntFromPrompt(scenario, 1, mainMenu->getMenuChoices(), true);
+    choice = mainMenu->getIntFromPrompt(1, mainMenu->getMenuChoices(), true);
 
     cout << endl;
 
     switch (choice)  {
 
-      case 1 : cout << "New game begins now!" << endl;
+      case 1 : wildernessGame->play();
 
       default : {}
 

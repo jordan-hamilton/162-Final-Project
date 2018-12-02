@@ -14,6 +14,7 @@ Game::Game() {
   maxRows = 25;
   maxCols = 25;
   player = nullptr;
+  map = nullptr;
 }
 
 

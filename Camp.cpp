@@ -7,3 +7,7 @@ Camp::Camp() {
   energyCost = 0;
   type = "camp";
 }
+
+void Camp::search() {
+
+}

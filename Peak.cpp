@@ -7,3 +7,8 @@ Peak::Peak() {
   energyCost = 3;
   type = "peak";
 }
+
+
+void Peak::search() {
+  
+}

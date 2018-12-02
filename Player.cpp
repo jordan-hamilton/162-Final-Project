@@ -1,15 +1,18 @@
 #include "Player.hpp"
 
+using std::stack;
+
 /***********************************************************************************************
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Player::Player() {
   energy = 100;
+  xCoordinate = 0, yCoordinate = 0;
 }
 
 
 Player::~Player() {
-  
+
 }
 
 

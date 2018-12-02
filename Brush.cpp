@@ -7,3 +7,7 @@ Brush::Brush() {
   energyCost = 2;
   type = "brush";
 }
+
+void Brush::search() {
+
+}

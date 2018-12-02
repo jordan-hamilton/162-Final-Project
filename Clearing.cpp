@@ -7,3 +7,7 @@ Clearing::Clearing() {
   energyCost = 1;
   type = "clearing";
 }
+
+void Clearing::search() {
+  
+}

@@ -9,6 +9,7 @@
 ** circular linked list based on the user's choice.
 ***********************************************************************************************/
 
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -30,6 +31,10 @@ int main() {
 
   int choice;
   string scenario;
+  Game newGame;
+
+  unsigned seed = time(0);
+  srand(seed);
 
   unique_ptr<Menu> mainMenu( new Menu() );
   populateMenu(mainMenu);
@@ -47,7 +52,6 @@ run out of energy.\n";
     switch (choice)  {
 
       case 1 : cout << "New game begins now!" << endl;
-               break;
 
       default : {}
 

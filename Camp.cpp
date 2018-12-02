@@ -4,6 +4,7 @@
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Camp::Camp() {
+  icon = '@';
   energyCost = 0;
   type = "camp";
 }

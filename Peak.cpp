@@ -6,7 +6,7 @@
 Peak::Peak() {
   icon = '^';
   energyCost = 3;
-  type = "peak";
+  type = "Peak";
 }
 
 
@@ -16,5 +16,7 @@ void Peak::search() {
   revealSpace( this->getEast() );
   revealSpace( this->getSouth() );
   revealSpace( this->getWest() );
+
+  searched = true;
 
 }

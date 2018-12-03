@@ -57,8 +57,6 @@ int main() {
 
   } while( choice != mainMenu->getMenuChoices() );
 
-  mainMenu = nullptr;
-
   return 0;
 
 }

@@ -30,7 +30,6 @@ void populateMenu(unique_ptr<Menu> &menu);
 int main() {
 
   int choice;
-  string scenario;
 
   unsigned seed = time(0);
   srand(seed);

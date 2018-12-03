@@ -11,7 +11,8 @@ class Clearing : public Space {
 
   public:
     Clearing();
-    void search() override;
+    void scavenge() override;
+    void scout() override;
 
   private:
 

@@ -10,6 +10,11 @@ Clearing::Clearing() {
 }
 
 
+void Clearing::scavenge() {
+
+}
+
+
 /***********************************************************************************************
 ** Description: This method generates a random number between 1 and 2 to determine whether 1
 ** or 2 spaces will be revealed while searching from this space. The number of spaces to the
@@ -19,7 +24,7 @@ Clearing::Clearing() {
 ** spot on the map by marking it as discovered, if the spot is a valid pointer that has not yet
 ** been discovered.
 ***********************************************************************************************/
-void Clearing::search() {
+void Clearing::scout() {
 
   int spacesRevealed = 0;
 

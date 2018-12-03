@@ -10,6 +10,11 @@ Brush::Brush() {
 }
 
 
+void Brush::scavenge() {
+
+}
+
+
 /***********************************************************************************************
 ** Description: This method generates a random number between 0 and 1 to determine whether or
 ** not a space will be revealed while searching from this space. The number of spaces to the
@@ -19,7 +24,7 @@ Brush::Brush() {
 ** spot on the map by marking it as discovered, if the spot is a valid pointer that has not yet
 ** been discovered.
 ***********************************************************************************************/
-void Brush::search() {
+void Brush::scout() {
 
   int spacesRevealed = 0;
 

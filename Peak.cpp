@@ -10,7 +10,12 @@ Peak::Peak() {
 }
 
 
-void Peak::search() {
+void Peak::scavenge() {
+
+}
+
+
+void Peak::scout() {
 
   revealSpace( this->getNorth() );
   revealSpace( this->getEast() );

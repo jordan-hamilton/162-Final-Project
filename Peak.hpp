@@ -11,7 +11,8 @@ class Peak : public Space {
 
   public:
     Peak();
-    void search() override;
+    void scavenge() override;
+    void scout() override;
 
   private:
 

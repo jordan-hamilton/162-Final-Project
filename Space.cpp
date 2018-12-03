@@ -6,10 +6,11 @@ using std::string;
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Space::Space() {
-  north = nullptr, east = nullptr, west = nullptr, south = nullptr;
+  north = nullptr, east = nullptr, south = nullptr, west = nullptr;
   hikerHere = false;
   playerHere = false;
   discovered = false;
+  foundItem = false;
   searched = false;
   icon ='\0';
   energyCost = 1;
@@ -19,6 +20,14 @@ Space::Space() {
 
 Space::~Space() {
 
+}
+
+
+void Space::search() {
+
+  scout();
+  scavenge();
+  
 }
 
 

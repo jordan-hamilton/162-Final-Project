@@ -9,6 +9,12 @@ Camp::Camp() {
   type = "Camp";
 }
 
+
+void Camp::scavenge() {
+
+}
+
+
 /***********************************************************************************************
 ** Description: This method sets the number of spaces that should be revealed to 1, then the
 ** number of spaces to the north, east, south and west of the current space that haven't been
@@ -17,7 +23,7 @@ Camp::Camp() {
 ** on the map by marking it as discovered, if the spot is a valid pointer that has not yet been
 ** discovered.
 ***********************************************************************************************/
-void Camp::search() {
+void Camp::scout() {
 
   int spacesRevealed = 0;
 

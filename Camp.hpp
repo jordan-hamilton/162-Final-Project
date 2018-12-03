@@ -11,7 +11,8 @@ class Camp : public Space {
 
   public:
     Camp();
-    void search() override;
+    void scavenge() override;
+    void scout() override;
 
   private:
 

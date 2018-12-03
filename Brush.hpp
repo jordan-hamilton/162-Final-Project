@@ -11,7 +11,8 @@ class Brush : public Space {
 
   public:
     Brush();
-    void search() override;
+    void scavenge() override;
+    void scout() override;
 
   private:
 

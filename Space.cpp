@@ -48,6 +48,37 @@ bool Space::revealSpace(Space* spaceToReveal) {
 
 
 /***********************************************************************************************
+** Description: This method checks for valid pointers to the north, east, south, and west of
+** the current space, then returns an integer indicating how many of those spaces have been
+** marked as discovered. This indicates the maximum number of spaces that can be revealed when
+** searching.
+***********************************************************************************************/
+int Space::getDiscoverableSpaces() {
+
+  int eligibleSpaces = 0;
+
+  if ( north && !north->wasDiscovered()) {
+    eligibleSpaces++;
+  }
+
+  if ( east && !east->wasDiscovered()) {
+    eligibleSpaces++;
+  }
+
+  if ( south && !south->wasDiscovered()) {
+    eligibleSpaces++;
+  }
+
+  if ( west && !west->wasDiscovered()) {
+    eligibleSpaces++;
+  }
+
+  return eligibleSpaces;
+
+}
+
+
+/***********************************************************************************************
 ** Description: Takes a constant reference to an integer for the maximum random value to return,
 ** then generates and returns a random integer between 0 and 1 less than that value.
 ***********************************************************************************************/
@@ -78,14 +109,14 @@ bool Space::wasSearched() {
 
 char Space::getIcon() {
 
-  if (hikerHere) {
+  if (hikerHere && discovered) {
     return '!';
   } else if (playerHere) {
     return '*';
   } else if (discovered) {
     return icon;
   } else {
-    return icon;//DEBUG:'?';
+    return '?';
   }
 
 }
@@ -127,6 +158,7 @@ void Space::setHikerHere(bool presenceStatus) {
 
 
 void Space::setPlayerHere(bool presenceStatus) {
+
   playerHere = presenceStatus;
 
   if (playerHere) {

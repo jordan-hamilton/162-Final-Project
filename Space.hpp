@@ -7,6 +7,8 @@
 
 #include <string>
 
+enum Direction {North, East, South, West};
+
 class Space {
 
   public:
@@ -33,11 +35,9 @@ class Space {
     void setSouth(Space* southIn);
     void setWest(Space* westIn);
 
-  private:
-
-
   protected:
     bool revealSpace(Space* spaceToReveal);
+    int getDiscoverableSpaces();
     int generateNumber(const int &max);
     void setIcon(char iconIn);
     void setEnergyCost(int cost);

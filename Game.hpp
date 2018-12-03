@@ -16,6 +16,9 @@
 #include "Player.hpp"
 #include "Space.hpp"
 
+enum Direction {North, East, South, West};
+enum SpaceType {brushSpace, campSpace, clearingSpace, peakSpace};
+
 class Game {
 
   public:
@@ -25,14 +28,21 @@ class Game {
 
   private:
     int maxRows, maxCols;
-    void createMap();
     void cleanMap();
+    void createMap();
+    void displayStats();
     void endGame();
+    bool movePlayer(const int &wayToMove);
+    void populateMenus();
     void printMap();
     void setStartingLocation();
     int generateNumber(const int &max);
+    bool getHikerRescued();
+    void setHikerRescued(const bool &hikerState);
+    bool hikerRescued;
     Menu *actionMenu, *dirMenu;
     Player *player;
+    Space *currentSpace;
     Space*** map;
 
 };

@@ -4,21 +4,17 @@ using std::cout;
 using std::endl;
 using std::string;
 
-enum Direction {North, East, South, West};
-enum SpaceType {brushSpace, campSpace, clearingSpace, peakSpace};
-
 /***********************************************************************************************
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Game::Game() {
   maxRows = 25;
   maxCols = 25;
-  actionMenu = nullptr;
-  dirMenu = nullptr;
+  actionMenu = new Menu("What would you like to do in this area?");;
+  dirMenu = new Menu("Select a direction to explore:");
   player = nullptr;
+  currentSpace = nullptr;
   map = nullptr;
-
-
 }
 
 
@@ -34,8 +30,8 @@ Game::~Game() {
 void Game::play() {
 
   string prompt = "\nWelcome to Search & Rescue!\n\nYou're a wilderness survival expert searching \
-for a lost hiker.\nYour goal is to explore the terrain in search of the lost hiker before you run \
-out of energy.\nAs you explore, you can search your current location for sustenance and try to \
+for a trapped hiker.\nYour goal is to explore the terrain in search of the trapped hiker before you \
+run out of energy.\nAs you explore, you can search your current location for sustenance and try to \
 scout out your surroundings.\nYou can also try to explore the map without searching the area where \
 you're located, but you may become too fatigued to find the missing hiker if you don't strategically \
 choose which areas to explore.\n\n";
@@ -61,12 +57,41 @@ your energy.";
 
   cout << prompt << key << endl;
 
+  bool actionResult;
+  int actionChoice;
   player = new Player;
   createMap();
+  populateMenus();
 
   setStartingLocation();
 
   printMap();
+
+  do {
+
+    actionChoice = actionMenu->getIntFromPrompt(1, actionMenu->getMenuChoices(), true);
+
+    displayStats();
+
+    cout << endl;
+
+    switch (actionChoice)  {
+
+      case 1 :  currentSpace->search();
+                break;
+
+      case 2 :  if (player->hasEnergy()) {
+                  actionResult = movePlayer(dirMenu->getIntFromPrompt(1, dirMenu->getMenuChoices(), true));
+                } else {
+                  cout << "You don't have enough energy " << endl;
+                }
+                break;
+
+    }
+
+    cout << endl;
+
+  } while(!hikerRescued);
 
   endGame();
 
@@ -74,39 +99,25 @@ your energy.";
 
 
 /***********************************************************************************************
-** Description: This method randomly selects a side of the map for to start the player on, then
-** selects a random Space on that side of the map for that player to be placed to start from.
-** Then, a random space on the map is selected as the location for the missing hiker, as long as
-** that space is not the same as the player's starting location.
+** Description: Loops through the 2D array to free dynamically allocated memory for Space
+** objects.
 ***********************************************************************************************/
-void Game::setStartingLocation() {
-  int hikerRow = generateNumber(maxRows);
-  int hikerCol = generateNumber(maxCols);
+void Game::cleanMap() {
 
-  switch ( generateNumber(4) ) {
+  for (int i = 0; i < maxRows; i++) {
 
-    case North: player->setRow(0);
-                player->setCol( generateNumber(maxCols) );
-                break;
-    case East:  player->setRow( generateNumber(maxRows) );
-                player->setCol( maxCols - 1 );
-                break;
-    case South: player->setRow( maxRows - 1 );
-                player->setCol( generateNumber(maxCols) );
-                break;
-    case West:  player->setRow( generateNumber(maxRows) );
-                player->setCol(0);
-                break;
-  }
+   for (int j = 0; j < maxCols; j++) {
+       delete map[i][j];
+       map[i][j] = nullptr;
+     }
 
-  map[player->getRow()][player->getCol()]->setPlayerHere(true);
+     delete[] map[i];
+     map[i] = nullptr;
 
-  while (player->getRow() == hikerRow && player->getCol() == hikerCol) {
-    hikerRow = generateNumber(maxRows);
-    hikerCol = generateNumber(maxCols);
-  }
+   }
 
-  map[hikerRow][hikerCol]->setHikerHere(true);
+  delete [] map;
+  map = nullptr;
 
 }
 
@@ -161,25 +172,14 @@ void Game::createMap() {
 
 
 /***********************************************************************************************
-** Description: Loops through the 2D array to free dynamically allocated memory for Space
-** objects.
+** Description: This method outputs the player's energy, the terrain type at their current
+** location, so the player can choose whether to search or move from this location for a better
+** view and/or better chance of finding items.
 ***********************************************************************************************/
-void Game::cleanMap() {
+void Game::displayStats() {
 
-  for (int i = 0; i < maxRows; i++) {
-
-   for (int j = 0; j < maxCols; j++) {
-       delete map[i][j];
-       map[i][j] = nullptr;
-     }
-
-     delete[] map[i];
-     map[i] = nullptr;
-
-   }
-
-  delete [] map;
-  map = nullptr;
+  cout << "Energy: " << player->getEnergy() << endl;
+  cout << "Terrain: " << currentSpace->getType() << endl;
 
 }
 
@@ -195,10 +195,17 @@ void Game::endGame() {
     cleanMap();
   }
 
+  currentSpace = nullptr;
+
   if (player) {
     delete player;
     player = nullptr;
   }
+
+  delete actionMenu;
+  actionMenu = nullptr;
+  delete dirMenu;
+  dirMenu = nullptr;
 
 }
 
@@ -214,10 +221,128 @@ void Game::printMap() {
 
 }
 
+
 /***********************************************************************************************
 ** Description: Takes a constant reference to an integer for the maximum random value to return,
 ** then generates and returns a random integer between 0 and 1 less than that value.
 ***********************************************************************************************/
 int Game::generateNumber(const int &max) {
   return rand() % max;
+}
+
+
+/***********************************************************************************************
+** Description: Takes a constant reference to a Direction, then checks if the player has enough
+** energy to make a move. If the player's energy is above 0 and the direction the player wishes
+** to move is a valid pointer, the current space is set to that space, then the player's energy
+** is drained by the cost of moving to that new space. If the player was able to move, the
+** original and current spaces are updated to reflect the player's updated location.
+***********************************************************************************************/
+bool Game::movePlayer(const int &wayToMove) {
+
+  bool couldMove = false;
+
+  if ( player->hasEnergy() ) {
+
+    Space* originalSpace = currentSpace;
+
+    switch (wayToMove - 1) {
+      case North  : if ( currentSpace->getNorth()) {
+                      currentSpace = currentSpace->getNorth();
+                    }
+                    break;
+
+      case East   : if ( currentSpace->getEast() ) {
+                      currentSpace = currentSpace->getEast();
+                    }
+                    break;
+
+      case South  : if ( currentSpace->getSouth() ) {
+                      currentSpace = currentSpace->getSouth();
+                    }
+                    break;
+
+      case West   : if ( currentSpace->getWest() ) {
+                      currentSpace = currentSpace->getWest();
+                    }
+
+    }
+
+    if (originalSpace != currentSpace) {
+
+      originalSpace->setPlayerHere(false);
+      currentSpace->setPlayerHere(true);
+      player->drainEnergy( currentSpace->getEnergyCost() );
+      couldMove = true;
+
+    }
+
+  }
+
+  return couldMove;
+
+}
+
+
+/***********************************************************************************************
+** Description: This method adds appropriate options to the menus for potential actions after
+** an action is completed, and directions for the player to move if they choose the Move action.
+***********************************************************************************************/
+void Game::populateMenus() {
+
+  actionMenu->addMenuItem("Search this area");
+  actionMenu->addMenuItem("Move to a new area");
+  actionMenu->addMenuItem("View the map");
+
+  dirMenu->addMenuItem("North");
+  dirMenu->addMenuItem("East");
+  dirMenu->addMenuItem("South");
+  dirMenu->addMenuItem("West");
+
+}
+
+
+/***********************************************************************************************
+** Description: This method randomly selects a side of the map for to start the player on, then
+** selects a random Space on that side of the map for that player to be placed to start from.
+** Then, a random space on the map is selected as the location for the missing hiker, as long as
+** that space is not the same row or column as the player's starting location.
+***********************************************************************************************/
+void Game::setStartingLocation() {
+  int hikerRow = generateNumber(maxRows);
+  int hikerCol = generateNumber(maxCols);
+  int playerRow = generateNumber(maxRows);
+  int playerCol = generateNumber(maxCols);
+
+  switch ( generateNumber(4) ) {
+
+    case North: currentSpace = map[0][playerCol];
+                break;
+    case East:  currentSpace = map[playerRow][maxCols - 1];
+                break;
+    case South: currentSpace = map[maxRows - 1][playerCol];
+                break;
+    case West:  currentSpace = map[playerRow][0];
+                break;
+  }
+
+  currentSpace->setPlayerHere(true);
+
+  while (playerRow == hikerRow || playerCol == hikerCol) {
+    hikerRow = generateNumber(maxRows);
+    hikerCol = generateNumber(maxCols);
+  }
+
+  map[hikerRow][hikerCol]->setHikerHere(true);
+
+}
+
+
+bool Game::getHikerRescued() {
+  return hikerRescued;
+}
+
+
+void Game::setHikerRescued(const bool &hikerState) {
+  hikerRescued = hikerState;
 }

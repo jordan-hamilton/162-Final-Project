@@ -37,6 +37,8 @@ class Space {
 
 
   protected:
+    bool revealSpace(Space* spaceToReveal);
+    int generateNumber(const int &max);
     void setIcon(char iconIn);
     void setEnergyCost(int cost);
     void setType(std::string terrainType);

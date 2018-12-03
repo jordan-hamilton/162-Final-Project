@@ -22,6 +22,40 @@ Space::~Space() {
 }
 
 
+/***********************************************************************************************
+** Description: This method takes a pointer to a space object. If the pointer is valid, the
+** method verifies that the space has not been discovered by the player yet, and sets the space
+** as discovered. If the space is a null pointer or was a valid pointer but has already been
+** discovered by the player, the method returns false, so the search function in the inherited
+** classes can attempt to reveal a space in other directions.
+***********************************************************************************************/
+bool Space::revealSpace(Space* spaceToReveal) {
+
+  bool revealedSuccess = false;
+
+  if (spaceToReveal) {
+
+    if ( !spaceToReveal->wasDiscovered() ){
+      spaceToReveal->setDiscovered(true);
+      revealedSuccess = true;
+    }
+
+  }
+
+  return revealedSuccess;
+
+}
+
+
+/***********************************************************************************************
+** Description: Takes a constant reference to an integer for the maximum random value to return,
+** then generates and returns a random integer between 0 and 1 less than that value.
+***********************************************************************************************/
+int Space::generateNumber(const int &max) {
+  return rand() % max;
+}
+
+
 bool Space::isHikerHere() {
   return hikerHere;
 }

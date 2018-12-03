@@ -6,7 +6,6 @@
 Player::Player() {
   backpack = nullptr;
   energy = 100;
-  row = 0, col = 0;
 }
 
 
@@ -35,31 +34,25 @@ bool Player::hasEnergy() {
 }
 
 
+/***********************************************************************************************
+** Description: This method takes an integer representing the energy cost of a space the player
+** just moved to, then decreases the player's energy by that amount.
+***********************************************************************************************/
+void Player::drainEnergy(const int &energyDrained) {
+  energy -= energyDrained;
+}
+
+
+Pack* Player::getBackpack() {
+  return backpack;
+}
+
+
 int Player::getEnergy() {
   return energy;
 }
 
 
-int Player::getRow() {
-  return row;
-}
-
-
-int Player::getCol() {
-  return col;
-}
-
-
-void Player::setEnergy(int energyLeft) {
+void Player::setEnergy(const int &energyLeft) {
   energy = energyLeft;
-}
-
-
-void Player::setRow(int rowIn) {
-  row = rowIn;
-}
-
-
-void Player::setCol(int colIn) {
-  col = colIn;
 }

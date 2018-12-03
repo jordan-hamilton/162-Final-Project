@@ -13,16 +13,15 @@ class Player {
     Player();
     ~Player();
     bool hasEnergy();
+    Pack* getBackpack();
     int getEnergy();
-    int getRow();
-    int getCol();
-    void setEnergy(int energyLeft);
-    void setRow(int rowIn);
-    void setCol(int colIn);
+    void drainEnergy(const int &energyDrained);
+    void setEnergy(const int &energyLeft);
 
   private:
     Pack* backpack;
-    int energy, row, col;
+    int energy;
+    //int row, col;
 
 };
 

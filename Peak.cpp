@@ -12,4 +12,9 @@ Peak::Peak() {
 
 void Peak::search() {
 
+  revealSpace( this->getNorth() );
+  revealSpace( this->getEast() );
+  revealSpace( this->getSouth() );
+  revealSpace( this->getWest() );
+
 }

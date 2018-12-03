@@ -216,15 +216,8 @@ void Game::printMap() {
 
 /***********************************************************************************************
 ** Description: Takes a constant reference to an integer for the maximum random value to return,
-** then generates and returns a random integer between 0 and that value.
+** then generates and returns a random integer between 0 and 1 less than that value.
 ***********************************************************************************************/
 int Game::generateNumber(const int &max) {
   return rand() % max;
 }
-
-  /*
-  1st space:  if row is not 0, setNorth (row - 1) and setSouth (row - 1) to i
-
-  if col is not 0, setWest(col - 1) and setEast of (col - 1) to i
-
-  */

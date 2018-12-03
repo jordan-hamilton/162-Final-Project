@@ -40,17 +40,11 @@ class Space {
     void setIcon(char iconIn);
     void setEnergyCost(int cost);
     void setType(std::string terrainType);
-    bool hikerHere;
-    bool playerHere;
-    bool discovered;
-    bool searched;
+    bool hikerHere, playerHere, discovered, searched;
     char icon;
     int energyCost;
     std::string type;
-    Space* north;
-    Space* south;
-    Space* east;
-    Space* west;
+    Space *north, *south, *east, *west;
 
 };
 

@@ -44,12 +44,14 @@ bool Space::wasSearched() {
 
 char Space::getIcon() {
 
-  if (playerHere) {
+  if (hikerHere) {
+    return '!';
+  } else if (playerHere) {
     return '*';
   } else if (discovered) {
     return icon;
   } else {
-    return '?';
+    return icon;//DEBUG:'?';
   }
 
 }
@@ -96,7 +98,7 @@ void Space::setPlayerHere(bool presenceStatus) {
   if (playerHere) {
     discovered = true;
   }
-  
+
 }
 
 

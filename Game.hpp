@@ -11,6 +11,7 @@
 #include "Brush.hpp"
 #include "Camp.hpp"
 #include "Clearing.hpp"
+#include "Menu.hpp"
 #include "Peak.hpp"
 #include "Player.hpp"
 #include "Space.hpp"
@@ -30,7 +31,8 @@ class Game {
     void printMap();
     void setStartingLocation();
     int generateNumber(const int &max);
-    Player* player;
+    Menu *actionMenu, *dirMenu;
+    Player *player;
     Space*** map;
 
 };

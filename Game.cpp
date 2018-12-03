@@ -8,60 +8,49 @@ using std::string;
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Game::Game() {
-  maxRows = 25;
-  maxCols = 25;
+
+  maxRows = 20;
+  maxCols = 20;
   actionMenu = new Menu("What would you like to do in this area?");;
   dirMenu = new Menu("Select a direction to explore:");
+  populateMenus();
   player = nullptr;
   currentSpace = nullptr;
   map = nullptr;
+
 }
 
 
 /***********************************************************************************************
 ** Description: Destructor that calls delete on pointers to free dynamically allocated memory
 ** for the map and player if this step has not been completed at the end of the play method.
+** Memory for Menu objects is freed is the menus are valid pointers.
 ***********************************************************************************************/
 Game::~Game() {
+
   endGame();
+
+  if (actionMenu) {
+    delete actionMenu;
+    actionMenu = nullptr;
+  }
+
+  if (dirMenu) {
+    delete dirMenu;
+    dirMenu = nullptr;
+  }
+
 }
 
 
 void Game::play() {
 
-  string prompt = "\nWelcome to Search & Rescue!\n\nYou're a wilderness survival expert searching \
-for a trapped hiker.\nYour goal is to explore the terrain in search of the trapped hiker before you \
-run out of energy.\nAs you explore, you can search your current location for sustenance and try to \
-scout out your surroundings.\nYou can also try to explore the map without searching the area where \
-you're located, but you may become too fatigued to find the missing hiker if you don't strategically \
-choose which areas to explore.\n\n";
-
-  string key = "Map Key:\n* - Your Location\nFrom your location, you can search or move to another \
-area on the map, including the areas you've already explored. You can't search in the same area \
-twice. Searching can unearth valuable goods to replenish your energy, which allows you to continue \
-your search. Searching can also reveal surrounding areas you haven't explored yet and prepare you \
-for the type of terrain you'll encounter, or even allow you to spot the lost hiker if he's close. \
-Different types of terrain take more energy to traverse, so choose your path wisely.\n\? - \
-Unexplored Area\nThis area hasn't been revealed yet. If it's near your current location, you can \
-search to try to reveal the type of terrain here and look for the hiker, or you can move to this \
-location to reveal it on the map.\n# - Brush\nYou expending 2 energy points navigating through \
-brush. Thick brush is hard to see through, so searching rarely reveals your surroundings. You \
-may find some hidden items that help replenish your energy, though.\n@ - Camp\nYou don't expend \
-any energy visiting a campsite. Searching here will always reveal 1 unexplored area to your north, \
-south, east or west, and can usually provide some good loot if you're low on energy. \n_ - Clearing \
-\n You expend 1 energy point going through a clearing. Searching from a clearing might reveal 1 or 2 \
-unexplored areas, but usually doesn't provide anything to replenish your energy. \n^ - Peak\nYou \
-expend 3 energy points climbing a peak, but a search from this height will reveal all unexplored \
-areas to the north, south, east and west. At these heights, you probably won't find much to replenish \
-your energy.";
-
-  cout << prompt << key << endl;
+  printScenario();
 
   bool actionResult;
   int actionChoice;
   player = new Player;
   createMap();
-  populateMenus();
 
   setStartingLocation();
 
@@ -69,29 +58,62 @@ your energy.";
 
   do {
 
-    actionChoice = actionMenu->getIntFromPrompt(1, actionMenu->getMenuChoices(), true);
+    printStats();
 
-    displayStats();
+    actionChoice = actionMenu->getIntFromPrompt(1, actionMenu->getMenuChoices(), true);
 
     cout << endl;
 
     switch (actionChoice)  {
 
-      case 1 :  currentSpace->search();
+      case 1 :  if ( currentSpace->wasSearched() ) {
+
+                  cout << "You've already searched this area." << endl;
+                  cout << "Try moving somewhere else if you'd like to search." << endl << endl;
+
+                } else if ( !player->getBackpack()->hasRoom() ){
+
+                  cout << "You have too much in your backpack to conduct a search." << endl;
+                  cout << "Use or discard some items if you'd like to search here." << endl << endl;
+
+                } else {
+                  currentSpace->search();
+                }
+
                 break;
 
       case 2 :  if (player->hasEnergy()) {
+
                   actionResult = movePlayer(dirMenu->getIntFromPrompt(1, dirMenu->getMenuChoices(), true));
+
+                  if (!actionResult) {
+
+                    cout << "Going this direction will take you off the map." << endl;
+                    cout << "Pick another direction if you'd like to keep exploring." << endl;
+
+                  }
+
                 } else {
-                  cout << "You don't have enough energy " << endl;
+
+                  cout << "You don't have enough energy to keep moving." << endl;
+                  cout << "Use some items in your backpack to replenish your energy." << endl << endl;
+
                 }
+
+                break;
+
+      case 3 :  printMap();
                 break;
 
     }
 
-    cout << endl;
+  } while( !hikerRescued && (player->hasEnergy() || player->getBackpack()->hasItems()) );
 
-  } while(!hikerRescued);
+  if (hikerRescued) {
+    cout << "Congratulations! You saved the hiker!" << endl;
+  } else {
+    cout << "You ran out of energy and weren't able to save the hiker. Please try again." << endl;
+  }
 
   endGame();
 
@@ -124,7 +146,7 @@ void Game::cleanMap() {
 
 /***********************************************************************************************
 ** Description: This method randomly selects a side of the map for to start the player on, then
-** selects a random Space on that side of the map for that player to be placed to start from.
+** selects a random Space on that side of the map for that player to be placed to start.
 ***********************************************************************************************/
 void Game::createMap() {
 
@@ -163,24 +185,6 @@ void Game::createMap() {
 
   }
 
-  cout << "map[0][24]'s south space type: " << map[0][24]->getSouth()->getType() << endl;
-  cout << "map[24][0]'s north space type: " << map[24][0]->getNorth()->getType() << endl;
-  cout << "map[0][0]'s east space type: " << map[0][0]->getEast()->getType() << endl;
-  cout << "map[0][24]'s west space type: " << map[0][24]->getWest()->getType() << endl;
-
-}
-
-
-/***********************************************************************************************
-** Description: This method outputs the player's energy, the terrain type at their current
-** location, so the player can choose whether to search or move from this location for a better
-** view and/or better chance of finding items.
-***********************************************************************************************/
-void Game::displayStats() {
-
-  cout << "Energy: " << player->getEnergy() << endl;
-  cout << "Terrain: " << currentSpace->getType() << endl;
-
 }
 
 
@@ -200,23 +204,6 @@ void Game::endGame() {
   if (player) {
     delete player;
     player = nullptr;
-  }
-
-  delete actionMenu;
-  actionMenu = nullptr;
-  delete dirMenu;
-  dirMenu = nullptr;
-
-}
-
-
-void Game::printMap() {
-  for (int i = 0; i < maxRows; i++) {
-
-    for (int j = 0; j < maxCols; j++) {
-      cout << map[i][j]->getIcon() << " ";
-    }
-    cout << endl;
   }
 
 }
@@ -247,7 +234,7 @@ bool Game::movePlayer(const int &wayToMove) {
     Space* originalSpace = currentSpace;
 
     switch (wayToMove - 1) {
-      case North  : if ( currentSpace->getNorth()) {
+      case North  : if ( currentSpace->getNorth() ) {
                       currentSpace = currentSpace->getNorth();
                     }
                     break;
@@ -298,6 +285,105 @@ void Game::populateMenus() {
   dirMenu->addMenuItem("East");
   dirMenu->addMenuItem("South");
   dirMenu->addMenuItem("West");
+
+}
+
+
+/***********************************************************************************************
+** Description: This method loops through the 2D array for the map, printing the icon at the
+** for the space pointer's terrain type at that location, depending on whether that space has
+** been marked as discovered, if the player or hiker is currently at that space, and the type
+** of terrain.
+***********************************************************************************************/
+void Game::printMap() {
+  for (int i = 0; i < maxRows; i++) {
+
+    for (int j = 0; j < maxCols; j++) {
+      cout << map[i][j]->getIcon() << " ";
+    }
+    cout << endl;
+  }
+
+  printMapKey();
+
+}
+
+
+/***********************************************************************************************
+** Description: This method outputs the map's key, so the player is aware of what different
+** icons mean on the map that was printed.
+***********************************************************************************************/
+void Game::printMapKey() {
+
+  cout << "* - Your location" << endl;
+  cout << "! - Hiker's location" << endl;
+  cout << "? - Unexplored area" << endl;
+  cout << "# - Brush" << endl;
+  cout << "@ - Camp" << endl;
+  cout << "_ - Clearing" << endl;
+  cout << "^ - Peak" << endl << endl;
+
+}
+
+
+/***********************************************************************************************
+** Description: This method outputs the game's information to the screen, so the player is
+** aware of the objective and rules.
+***********************************************************************************************/
+void Game::printScenario() {
+
+  string objective = "\nWelcome to Search & Rescue!\n\nYou're a wilderness survival expert \
+searching for a trapped hiker.\nYour goal is to explore the terrain in search of the trapped \
+hiker before you run out of energy.\nAs you explore, you can search your current location for \
+sustenance and try to scout out your surroundings.\nYou can also try to explore the map \
+without searching the area where you're located, but you may become too fatigued to find the \
+missing hiker if you don't strategically choose which areas to explore.\n\nAreas:\n";
+
+  string yourLocation = "* - Your Location\nFrom your location, you can search or move \
+to another area on the map, including the areas you've already visited.\nYou can't search in \
+the same area twice.\nSearching can unearth valuable goods to replenish your energy, which \
+allows you to continue your search.\nSearching can also reveal surrounding areas you haven't \
+explored yet and prepare you for the type of terrain you'll encounter, or even allow you to \
+spot the lost hiker if he's close.\nIf your backpack is too heavy from the items you collect \
+while searching, you'll have to use or discard some items if you wish to continue searching.\n\
+Different types of terrain take more energy to traverse, so choose your path and the areas you \
+want to search wisely.\n\n";
+
+  string unexplored = "? - Unexplored Area\nThis area hasn't been revealed yet.\nYou reveal \
+unexplored areas by moving to them, or by searching from your current location for a chance \
+to reveal nearby areas.\nYour chances of revealing a nearby area vary depending on the type \
+of terrain in your current location.\n\n";
+
+  string brush = "# - Brush\nYou expend 2 energy points navigating through brush.\nThick \
+brush is hard to see through, so searching only has a chance to reveal 1 unexplored \
+adjacent space.\nYou may find some hidden items that help replenish your energy, though.\n\n";
+
+  string camp = "@ - Camp\nYou don't expend any energy visiting a campsite.\nSearching a camp \
+will randomly reveal 1 unexplored area to your north, south, east or west.\nCamps can usually \
+provide some good loot if you're low on energy.\n\n";
+
+  string clearing = "_ - Clearing\n You expend 1 energy point going through a clearing.\n\
+Searching from a clearing has a chance to reveal 1 or 2 unexplored areas.\nClearings usually \
+don't provide anything to replenish your energy.\n\n";
+
+  string peak = "^ - Peak\nYou expend 3 energy points climbing a peak.\nA search from this \
+height will reveal all unexplored areas to the north, south, east and west.\nAt these heights, \
+you probably won't find much to replenish your energy.\n\n";
+
+  cout << objective << yourLocation << unexplored << brush << camp << clearing << peak;
+
+}
+
+
+/***********************************************************************************************
+** Description: This method outputs the player's energy, the terrain type at their current
+** location, so the player can choose whether to search or move from this location for a better
+** view and/or better chance of finding items.
+***********************************************************************************************/
+void Game::printStats() {
+
+  cout << "Your Energy: " << player->getEnergy() << endl;
+  cout << "Current Terrain: " << currentSpace->getType() << endl << endl;
 
 }
 

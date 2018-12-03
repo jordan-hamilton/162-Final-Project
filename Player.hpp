@@ -5,8 +5,6 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include <stack>
-
 #include "Pack.hpp"
 
 class Player {

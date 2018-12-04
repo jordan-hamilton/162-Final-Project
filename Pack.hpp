@@ -15,6 +15,7 @@ class Pack {
   public:
     Pack();
     ~Pack();
+    void addItem(const std::string &nameIn, const int &valueIn);
     bool hasItems();
     bool hasRoom();
 

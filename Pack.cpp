@@ -13,6 +13,15 @@ Pack::~Pack() {
 }
 
 
+void Pack::addItem(const std::string &nameIn, const int &valueIn) {
+
+  Item newItem(nameIn, valueIn);
+
+  items.push_back(newItem);
+  
+}
+
+
 /***********************************************************************************************
 ** Description: Checks the size of the items stack, and returns true if the stack's size is
 ** greater than 0. Otherwise, this method returns false.

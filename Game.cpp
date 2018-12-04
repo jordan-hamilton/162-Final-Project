@@ -69,12 +69,12 @@ void Game::play() {
       case 1 :  if ( currentSpace->wasSearched() ) {
 
                   cout << "You've already searched this area." << endl;
-                  cout << "Try moving somewhere else if you'd like to search." << endl << endl;
+                  cout << "Try moving somewhere else if you'd like to search again." << endl << endl;
 
                 } else if ( !player->getBackpack()->hasRoom() ){
 
-                  cout << "You have too much in your backpack to conduct a search." << endl;
-                  cout << "Use or discard some items if you'd like to search here." << endl << endl;
+                  cout << "You have too much in your backpack to search here." << endl;
+                  cout << "Use some items before searching here." << endl << endl;
 
                 } else {
                   currentSpace->search();
@@ -210,63 +210,89 @@ void Game::endGame() {
 
 
 /***********************************************************************************************
-** Description: Takes a constant reference to an integer for the maximum random value to return,
-** then generates and returns a random integer between 0 and 1 less than that value.
+** Description: Takes a constant reference to an integer for the number of possible random
+** values that could be returned (between 0 and one less than the passed integer), then
+** generates and returns a random integer between 0 and 1 less than that value.
 ***********************************************************************************************/
-int Game::generateNumber(const int &max) {
-  return rand() % max;
+int Game::generateNumber(const int &possibilities) {
+  return rand() % possibilities;
 }
 
 
 /***********************************************************************************************
-** Description: Takes a constant reference to a Direction, then checks if the player has enough
+** Description: Takes a constant reference to an integer, then checks if the player has enough
 ** energy to make a move. If the player's energy is above 0 and the direction the player wishes
 ** to move is a valid pointer, the current space is set to that space, then the player's energy
 ** is drained by the cost of moving to that new space. If the player was able to move, the
-** original and current spaces are updated to reflect the player's updated location.
+** original and current spaces are updated to reflect the player's updated location. If the
+** hiker is at the updated location, the hikerRescued boolean is set to true.
 ***********************************************************************************************/
 bool Game::movePlayer(const int &wayToMove) {
 
   bool couldMove = false;
 
-  if ( player->hasEnergy() ) {
+  Space* originalSpace = currentSpace;
 
-    Space* originalSpace = currentSpace;
+  switch (wayToMove - 1) {
+    case North  : if ( currentSpace->getNorth() ) {
+                    currentSpace = currentSpace->getNorth();
+                  }
+                  break;
 
-    switch (wayToMove - 1) {
-      case North  : if ( currentSpace->getNorth() ) {
-                      currentSpace = currentSpace->getNorth();
-                    }
-                    break;
+    case East   : if ( currentSpace->getEast() ) {
+                    currentSpace = currentSpace->getEast();
+                  }
+                  break;
 
-      case East   : if ( currentSpace->getEast() ) {
-                      currentSpace = currentSpace->getEast();
-                    }
-                    break;
+    case South  : if ( currentSpace->getSouth() ) {
+                    currentSpace = currentSpace->getSouth();
+                  }
+                  break;
 
-      case South  : if ( currentSpace->getSouth() ) {
-                      currentSpace = currentSpace->getSouth();
-                    }
-                    break;
+    case West   : if ( currentSpace->getWest() ) {
+                    currentSpace = currentSpace->getWest();
+                  }
 
-      case West   : if ( currentSpace->getWest() ) {
-                      currentSpace = currentSpace->getWest();
-                    }
+  }
 
-    }
+  if (originalSpace != currentSpace) {
 
-    if (originalSpace != currentSpace) {
+    originalSpace->setPlayerHere(false);
+    currentSpace->setPlayerHere(true);
+    player->drainEnergy( currentSpace->getEnergyCost() );
+    couldMove = true;
 
-      originalSpace->setPlayerHere(false);
-      currentSpace->setPlayerHere(true);
-      player->drainEnergy( currentSpace->getEnergyCost() );
-      couldMove = true;
-
+    if ( currentSpace->isHikerHere() ) {
+      hikerRescued = true;
     }
 
   }
 
   return couldMove;
+
+}
+
+
+/***********************************************************************************************
+** Description: This method adds names for potential items that can be found while searching
+** an area into the itemStore vector, so a successful search for an item allows an item with
+** that name to be added to the player's backpack.
+***********************************************************************************************/
+void Game::populateItemStore() {
+
+  itemStore.push_back("Ants");
+  itemStore.push_back("Apple");
+  itemStore.push_back("Berries");
+  itemStore.push_back("Cattails");
+  itemStore.push_back("Crickets");
+  itemStore.push_back("Fish");
+  itemStore.push_back("Mushrooms");
+  itemStore.push_back("Quail eggs");
+  itemStore.push_back("Rabbit");
+  itemStore.push_back("Radio");
+  itemStore.push_back("Slugs");
+  itemStore.push_back("Water");
+  itemStore.push_back("Worms");
 
 }
 
@@ -336,18 +362,20 @@ void Game::printScenario() {
 searching for a trapped hiker.\nYour goal is to explore the terrain in search of the trapped \
 hiker before you run out of energy.\nAs you explore, you can search your current location for \
 sustenance and try to scout out your surroundings.\nYou can also try to explore the map \
-without searching the area where you're located, but you may become too fatigued to find the \
-missing hiker if you don't strategically choose which areas to explore.\n\nAreas:\n";
+without searching the area where you're located, but you need to search until you find your \
+radio so you can call for help once you find the hiker. You may also become too fatigued to find \
+the missing hiker if you don't strategically choose which areas to explore.\n\nAreas:\n";
 
   string yourLocation = "* - Your Location\nFrom your location, you can search or move \
 to another area on the map, including the areas you've already visited.\nYou can't search in \
 the same area twice.\nSearching can unearth valuable goods to replenish your energy, which \
-allows you to continue your search.\nSearching can also reveal surrounding areas you haven't \
-explored yet and prepare you for the type of terrain you'll encounter, or even allow you to \
-spot the lost hiker if he's close.\nIf your backpack is too heavy from the items you collect \
-while searching, you'll have to use or discard some items if you wish to continue searching.\n\
-Different types of terrain take more energy to traverse, so choose your path and the areas you \
-want to search wisely.\n\n";
+allows you to continue your search.\nSearching can also reveal the radio you need to have in \
+your backpack so you can call for help once you've located the hiker.\nSurrounding areas you \
+haven't explored yet can also be revealed by searching, which can prepare you for the type of \
+terrain you'll encounter, or even allow you to spot the lost hiker if he's close.\nIf your \
+backpack is too heavy from the items you collect while searching, you'll have to use or discard \
+some items if you wish to continue searching.\nDifferent types of terrain take more energy to \
+traverse, so choose your path and the areas you want to search wisely.\n\n";
 
   string unexplored = "? - Unexplored Area\nThis area hasn't been revealed yet.\nYou reveal \
 unexplored areas by moving to them, or by searching from your current location for a chance \
@@ -356,19 +384,21 @@ of terrain in your current location.\n\n";
 
   string brush = "# - Brush\nYou expend 2 energy points navigating through brush.\nThick \
 brush is hard to see through, so searching only has a chance to reveal 1 unexplored \
-adjacent space.\nYou may find some hidden items that help replenish your energy, though.\n\n";
+adjacent space.\nYou have a 1 in 2 chance of finding hidden items to add to your backpack \
+that help replenish your energy, though.\nYou might even find the radio you lost, which you \
+need so you can call for help and win the game.\n\n";
 
   string camp = "@ - Camp\nYou don't expend any energy visiting a campsite.\nSearching a camp \
-will randomly reveal 1 unexplored area to your north, south, east or west.\nCamps can usually \
-provide some good loot if you're low on energy.\n\n";
+will randomly reveal 1 unexplored area to your north, south, east or west.\nCamps have a 3 \
+in 4 chance of providing some item to store in your backpack.\n\n";
 
   string clearing = "_ - Clearing\n You expend 1 energy point going through a clearing.\n\
-Searching from a clearing has a chance to reveal 1 or 2 unexplored areas.\nClearings usually \
-don't provide anything to replenish your energy.\n\n";
+Searching from a clearing has a chance to reveal 1 or 2 unexplored areas.\nClearings have \
+roughly a 1 in 3 chance of providing something to add to your backpack.\n\n";
 
   string peak = "^ - Peak\nYou expend 3 energy points climbing a peak.\nA search from this \
 height will reveal all unexplored areas to the north, south, east and west.\nAt these heights, \
-you probably won't find much to replenish your energy.\n\n";
+you'll only have a 1 in 5 chance of finding something to add to your backpack.\n\n";
 
   cout << objective << yourLocation << unexplored << brush << camp << clearing << peak;
 

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "Brush.hpp"
 #include "Camp.hpp"
@@ -31,13 +32,14 @@ class Game {
     void createMap();
     void endGame();
     bool movePlayer(const int &wayToMove);
+    void populateItemStore();
     void populateMenus();
     void printMap();
     void printMapKey();
     void printScenario();
     void printStats();
     void setStartingLocation();
-    int generateNumber(const int &max);
+    int generateNumber(const int &possibilities);
     bool getHikerRescued();
     void setHikerRescued(const bool &hikerState);
     bool hikerRescued;
@@ -45,6 +47,7 @@ class Game {
     Player *player;
     Space *currentSpace;
     Space*** map;
+    std::vector<std::string> itemStore;
 
 };
 

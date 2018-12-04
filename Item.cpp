@@ -14,8 +14,8 @@ Item::Item() {
 ** and a constant reference to an integer for the energy value of the item.
 ***********************************************************************************************/
 Item::Item(const std::string &nameIn, const int &valueIn) {
-  name = "";
-  value = -1;
+  name = nameIn;
+  value = valueIn;
 }
 
 std::string Item::getName() {

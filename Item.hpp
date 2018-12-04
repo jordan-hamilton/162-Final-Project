@@ -12,7 +12,6 @@ class Item {
   public:
     Item();
     Item(const std::string &nameIn, const int &valueIn);
-    ~Item();
     std::string getName();
     int getValue();
 

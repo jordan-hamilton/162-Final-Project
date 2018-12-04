@@ -48,9 +48,14 @@ void Game::play() {
   printScenario();
 
   bool actionResult;
+
   int actionChoice;
+
   player = new Player;
+
   createMap();
+
+  populateItemStore();
 
   setStartingLocation();
 
@@ -77,7 +82,13 @@ void Game::play() {
                   cout << "Use some items before searching here." << endl << endl;
 
                 } else {
+
                   currentSpace->search();
+
+                  if ( currentSpace->wasItemScavenged() ) {
+                    addItemToBackpack();
+                  }
+
                 }
 
                 break;
@@ -116,6 +127,31 @@ void Game::play() {
   }
 
   endGame();
+
+}
+
+
+/***********************************************************************************************
+** Description: This method is called if an area's seach successfully returned an item to add to
+** the player's backpack. A random item at a location itemStore is added to the player's
+** backpack with an associated value, which is used to restore energy when used by the player.
+** If the random item is the radio, that item is removed from the itemStore so it can't be
+** added twice. The item is added to the backpack using the addItem function to add an item with
+** a random value between 1 and 5.
+***********************************************************************************************/
+void Game::addItemToBackpack() {
+
+  int itemNumber = generateNumber( itemStore.size() );
+  
+  string itemToAdd = itemStore.at(itemNumber);
+
+  if (itemToAdd == "Radio") {
+    itemStore.erase(itemStore.begin() + itemNumber);
+  }
+
+  player->getBackpack()->addItem( itemToAdd, generateNumber(5) + 1 );
+
+  cout << "You found: " << itemToAdd << endl;
 
 }
 
@@ -191,7 +227,8 @@ void Game::createMap() {
 /***********************************************************************************************
 ** Description: This method resets the map and player at the end of the play method, so the
 ** location and energy for the player and the map layout can be reset if another game is
-** played.
+** played. The currentSpace is set to null and the itemStore is cleared so the radio can be
+** readded by playing again.
 ***********************************************************************************************/
 void Game::endGame() {
 
@@ -205,6 +242,8 @@ void Game::endGame() {
     delete player;
     player = nullptr;
   }
+
+  itemStore.clear();
 
 }
 
@@ -290,6 +329,7 @@ void Game::populateItemStore() {
   itemStore.push_back("Quail eggs");
   itemStore.push_back("Rabbit");
   itemStore.push_back("Radio");
+  itemStore.push_back("Squirrel");
   itemStore.push_back("Slugs");
   itemStore.push_back("Water");
   itemStore.push_back("Worms");

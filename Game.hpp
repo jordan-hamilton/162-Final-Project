@@ -28,6 +28,7 @@ class Game {
 
   private:
     int maxRows, maxCols;
+    void addItemToBackpack();
     void cleanMap();
     void createMap();
     void endGame();

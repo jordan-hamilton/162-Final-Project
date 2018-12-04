@@ -5,19 +5,24 @@
 #ifndef PACK_HPP
 #define PACK_HPP
 
-#include <iostream>
+#include <vector>
+#include <string>
+
+#include "Item.hpp"
 
 class Pack {
 
   public:
     Pack();
     ~Pack();
-    void listItems();
-    int getItemLimit();
-    void setItemLimit(int limit);
+    bool hasItems();
+    bool hasRoom();
 
   private:
     int itemLimit;
+    std::vector<Item> items;
+    int getItemLimit();
+    void setItemLimit(int limit);
 
 };
 

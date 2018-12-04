@@ -9,7 +9,38 @@ Pack::Pack() {
 
 
 Pack::~Pack() {
-  
+
+}
+
+
+/***********************************************************************************************
+** Description: Checks the size of the items stack, and returns true if the stack's size is
+** greater than 0. Otherwise, this method returns false.
+***********************************************************************************************/
+bool Pack::hasItems() {
+
+  if (items.size() > 0) {
+    return true;
+  } else {
+    return false;
+  }
+
+}
+
+
+/***********************************************************************************************
+** Description: Checks the size of the items stack, and returns true if the stack's size is less
+** than the backpack's itemLimit value. Otherwise, it returns false to indicate that more items
+** cannot be added to the backpack.
+***********************************************************************************************/
+bool Pack::hasRoom() {
+
+  if (items.size() < itemLimit) {
+    return true;
+  } else {
+    return false;
+  }
+
 }
 
 

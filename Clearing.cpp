@@ -10,7 +10,17 @@ Clearing::Clearing() {
 }
 
 
+/***********************************************************************************************
+** Description: This method sets the itemScavenged variable to true if generating a random
+** number between 0 and 2 returns 0, meaning a 33% chance of scavenging this type of space. This
+** is used so the game can add an item to the player's backpack if space search reveals the
+** itemScavenged variable is updated to true.
+***********************************************************************************************/
 void Clearing::scavenge() {
+
+  if (generateNumber(3) == 0) {
+    itemScavenged = true;
+  };
 
 }
 

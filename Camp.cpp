@@ -10,7 +10,17 @@ Camp::Camp() {
 }
 
 
+/***********************************************************************************************
+** Description: This method sets the itemScavenged variable to true if generating a random
+** number between 0 and 3 doesn't return 0, meaning a 75% chance of scavenging this type of
+** space. This is used so the game can add an item to the player's backpack if space search
+** reveals the itemScavenged variable is updated to true.
+***********************************************************************************************/
 void Camp::scavenge() {
+
+  if (generateNumber(4) != 0) {
+    itemScavenged = true;
+  };
 
 }
 

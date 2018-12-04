@@ -10,7 +10,17 @@ Brush::Brush() {
 }
 
 
+/***********************************************************************************************
+** Description: This method sets the itemScavenged variable to true if generating a random
+** number between 0 and 1 returns a 0, meaning a 50% chance of scavenging this type of space.
+** This is used so the game can add an item to the player's backpack if space search reveals the
+** itemScavenged variable is updated to true.
+***********************************************************************************************/
 void Brush::scavenge() {
+
+  if (generateNumber(2) == 0) {
+    itemScavenged = true;
+  };
 
 }
 

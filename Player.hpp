@@ -21,7 +21,6 @@ class Player {
   private:
     Pack* backpack;
     int energy;
-    //int row, col;
 
 };
 

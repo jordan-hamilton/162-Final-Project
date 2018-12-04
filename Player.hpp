@@ -16,6 +16,7 @@ class Player {
     Pack* getBackpack();
     int getEnergy();
     void drainEnergy(const int &energyDrained);
+    void restoreEnergy(const int &energyRestored);
     void setEnergy(const int &energyLeft);
 
   private:

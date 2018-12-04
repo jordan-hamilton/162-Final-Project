@@ -43,6 +43,15 @@ void Player::drainEnergy(const int &energyDrained) {
 }
 
 
+/***********************************************************************************************
+** Description: This method takes an integer representing the value of an item the player
+** has in the backpack, then increases the player's energy by the value of that item.
+***********************************************************************************************/
+void Player::restoreEnergy(const int &energyRestored) {
+  energy += energyRestored;
+}
+
+
 Pack* Player::getBackpack() {
   return backpack;
 }

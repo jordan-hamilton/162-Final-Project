@@ -4,7 +4,7 @@
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Player::Player() {
-  backpack = nullptr;
+  backpack = new Pack;
   energy = 100;
 }
 

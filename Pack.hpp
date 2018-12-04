@@ -5,6 +5,7 @@
 #ifndef PACK_HPP
 #define PACK_HPP
 
+#include <iostream>
 #include <vector>
 #include <string>
 
@@ -18,11 +19,16 @@ class Pack {
     void addItem(const std::string &nameIn, const int &valueIn);
     bool hasItems();
     bool hasRoom();
+    int getItemCount();
+    int getItemLimit();
+    int getItemValue(const int &index);
+    void printItems();
+    void removeItem(const int &index);
 
   private:
-    int itemLimit;
+    unsigned int itemLimit;
     std::vector<Item> items;
-    int getItemLimit();
+
     void setItemLimit(int limit);
 
 };

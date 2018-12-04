@@ -100,7 +100,7 @@ void Game::play() {
                   if (!actionResult) {
 
                     cout << "Going this direction will take you off the map." << endl;
-                    cout << "Pick another direction if you'd like to keep exploring." << endl;
+                    cout << "Pick another direction if you'd like to keep exploring." << endl << endl;
 
                   }
 
@@ -113,7 +113,16 @@ void Game::play() {
 
                 break;
 
-      case 3 :  printMap();
+      case 3 :  if ( player->getBackpack()->hasItems() ) {
+                  useItem();
+                } else {
+                  cout << "You don't have any items in your backpack." << endl;
+                  cout << "Start searching areas to scavenge more items." << endl << endl;
+                }
+
+                break;
+
+      case 4 :  printMap();
                 break;
 
     }
@@ -135,21 +144,28 @@ void Game::play() {
 ** Description: This method is called if an area's seach successfully returned an item to add to
 ** the player's backpack. A random item at a location itemStore is added to the player's
 ** backpack with an associated value, which is used to restore energy when used by the player.
-** If the random item is the radio, that item is removed from the itemStore so it can't be
-** added twice. The item is added to the backpack using the addItem function to add an item with
+** If the random item is the radio, that item is added with a value of 0 to distinguish it from
+** consumables and it is removed from the itemStore so it can't be added to the backpack twice.
+** Otherwise, the item is added to the backpack using the addItem function to add an item with
 ** a random value between 1 and 5.
 ***********************************************************************************************/
 void Game::addItemToBackpack() {
 
   int itemNumber = generateNumber( itemStore.size() );
-  
+
   string itemToAdd = itemStore.at(itemNumber);
 
   if (itemToAdd == "Radio") {
-    itemStore.erase(itemStore.begin() + itemNumber);
-  }
 
-  player->getBackpack()->addItem( itemToAdd, generateNumber(5) + 1 );
+    player->getBackpack()->addItem( itemToAdd, 0 );
+
+    itemStore.erase(itemStore.begin() + itemNumber);
+
+  } else {
+
+    player->getBackpack()->addItem( itemToAdd, generateNumber(5) + 1 );
+
+  }
 
   cout << "You found: " << itemToAdd << endl;
 
@@ -245,6 +261,8 @@ void Game::endGame() {
 
   itemStore.clear();
 
+  hikerRescued = false;
+
 }
 
 
@@ -302,7 +320,12 @@ bool Game::movePlayer(const int &wayToMove) {
     couldMove = true;
 
     if ( currentSpace->isHikerHere() ) {
-      hikerRescued = true;
+
+      cout << "You found the hiker!" << endl;
+      cout << "Use your radio from this location to call for help and win the game." << endl;
+      cout << "If you haven't found your radio yet, keep searching and return here to use it \
+once you're ready." << endl;
+
     }
 
   }
@@ -319,14 +342,10 @@ bool Game::movePlayer(const int &wayToMove) {
 ***********************************************************************************************/
 void Game::populateItemStore() {
 
-  itemStore.push_back("Ants");
   itemStore.push_back("Apple");
   itemStore.push_back("Berries");
   itemStore.push_back("Cattails");
-  itemStore.push_back("Crickets");
   itemStore.push_back("Fish");
-  itemStore.push_back("Mushrooms");
-  itemStore.push_back("Quail eggs");
   itemStore.push_back("Rabbit");
   itemStore.push_back("Radio");
   itemStore.push_back("Squirrel");
@@ -345,7 +364,9 @@ void Game::populateMenus() {
 
   actionMenu->addMenuItem("Search this area");
   actionMenu->addMenuItem("Move to a new area");
+  actionMenu->addMenuItem("Use an item in your backpack");
   actionMenu->addMenuItem("View the map");
+
 
   dirMenu->addMenuItem("North");
   dirMenu->addMenuItem("East");
@@ -453,7 +474,8 @@ you'll only have a 1 in 5 chance of finding something to add to your backpack.\n
 void Game::printStats() {
 
   cout << "Your Energy: " << player->getEnergy() << endl;
-  cout << "Current Terrain: " << currentSpace->getType() << endl << endl;
+  cout << "Current Terrain: " << currentSpace->getType() << endl;
+  cout << "Items: " << player->getBackpack()->getItemCount() << "/" << player->getBackpack()->getItemLimit() << endl << endl;
 
 }
 
@@ -490,6 +512,39 @@ void Game::setStartingLocation() {
   }
 
   map[hikerRow][hikerCol]->setHikerHere(true);
+
+}
+
+
+/***********************************************************************************************
+** Description: This method prompts the user to select an item from the backpack to use to
+** restore energy. The player's energy is restored by the item's value. If the item selected is
+** the radio and the player is not in the same area as the hiker, an error message is displayed.
+** Otherwise, the hikerRescued variable is set to true.
+***********************************************************************************************/
+void Game::useItem() {
+
+  int choice;
+
+  player->getBackpack()->printItems();
+
+  choice = actionMenu->getIntFromPrompt("Which item would you like to use?", 1, player->getBackpack()->getItemCount(), false);
+
+  if ( player->getBackpack()->getItemValue(choice - 1) != 0) {
+
+    cout << "You added " << player->getBackpack()->getItemValue(choice - 1) << " points to your energy." << endl;
+    player->restoreEnergy( player->getBackpack()->getItemValue(choice - 1) );
+    player->getBackpack()->removeItem(choice - 1);
+
+  } else if ( !currentSpace->isHikerHere() ) {
+
+    cout << "You must be in the same area as the hiker to use your radio." << endl;
+
+  } else {
+
+    hikerRescued = true;
+
+  }
 
 }
 

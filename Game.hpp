@@ -32,6 +32,7 @@ class Game {
     void cleanMap();
     void createMap();
     void endGame();
+    int generateNumber(const int &possibilities);
     bool movePlayer(const int &wayToMove);
     void populateItemStore();
     void populateMenus();
@@ -40,7 +41,8 @@ class Game {
     void printScenario();
     void printStats();
     void setStartingLocation();
-    int generateNumber(const int &possibilities);
+    void useItem();
+
     bool getHikerRescued();
     void setHikerRescued(const bool &hikerState);
     bool hikerRescued;

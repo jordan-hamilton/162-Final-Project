@@ -10,7 +10,7 @@ Space::Space() {
   hikerHere = false;
   playerHere = false;
   discovered = false;
-  foundItem = false;
+  itemScavenged = false;
   searched = false;
   icon ='\0';
   energyCost = 1;
@@ -27,7 +27,7 @@ void Space::search() {
 
   scout();
   scavenge();
-  
+
 }
 
 
@@ -88,11 +88,12 @@ int Space::getDiscoverableSpaces() {
 
 
 /***********************************************************************************************
-** Description: Takes a constant reference to an integer for the maximum random value to return,
-** then generates and returns a random integer between 0 and 1 less than that value.
+** Description: Takes a constant reference to an integer for the number of possible random
+** values that could be returned (between 0 and one less than the passed integer), then
+** generates and returns a random integer between 0 and 1 less than that value.
 ***********************************************************************************************/
-int Space::generateNumber(const int &max) {
-  return rand() % max;
+int Space::generateNumber(const int &possibilities) {
+  return rand() % possibilities;
 }
 
 
@@ -111,21 +112,33 @@ bool Space::wasDiscovered() {
 }
 
 
+bool Space::wasItemScavenged() {
+  return itemScavenged;
+}
+
+
 bool Space::wasSearched() {
   return searched;
 }
 
 
+/***********************************************************************************************
+** Description: This method is used to print a map and returns an * at the player's location,
+** regardless of the icon assigned to a space. If the hiker is set to a location that has also
+** been discovered by the player, an ! is returned. If the space hasn't been discovered by
+** the player yet, a ? is returned. If the location doesn't match the previous criteria, then
+** the space is discovered and not unique, so the space's icon character is returned.
+***********************************************************************************************/
 char Space::getIcon() {
 
-  if (hikerHere && discovered) {
-    return '!';
-  } else if (playerHere) {
+  if (playerHere) {
     return '*';
-  } else if (discovered) {
-    return icon;
-  } else {
+  } else if (hikerHere && discovered) {
+    return '!';
+  } else if (!discovered) {
     return '?';
+  } else {
+    return icon;
   }
 
 }
@@ -161,12 +174,16 @@ Space* Space::getWest() {
 }
 
 
-void Space::setHikerHere(bool presenceStatus) {
+void Space::setHikerHere(const bool &presenceStatus) {
   hikerHere = presenceStatus;
 }
 
 
-void Space::setPlayerHere(bool presenceStatus) {
+/***********************************************************************************************
+** Description: Takes a constant reference to a boolean, then sets the playerHere variable to
+** that value. If the player is at that space, the space is also marked as discovered.
+***********************************************************************************************/
+void Space::setPlayerHere(const bool &presenceStatus) {
 
   playerHere = presenceStatus;
 
@@ -177,27 +194,32 @@ void Space::setPlayerHere(bool presenceStatus) {
 }
 
 
-void Space::setDiscovered(bool discoveryStatus) {
+void Space::setDiscovered(const bool &discoveryStatus) {
   discovered = discoveryStatus;
 }
 
 
-void Space::setSearched(bool searchStatus) {
+void Space::setItemScavenged(const bool &itemStatus) {
+  itemScavenged = itemStatus;
+}
+
+
+void Space::setSearched(const bool &searchStatus) {
   searched = searchStatus;
 }
 
 
-void Space::setIcon(char iconIn) {
+void Space::setIcon(const char &iconIn) {
   icon = iconIn;
 }
 
 
-void Space::setEnergyCost(int cost) {
+void Space::setEnergyCost(const int &cost) {
   energyCost = cost;
 }
 
 
-void Space::setType(string terrainType) {
+void Space::setType(const string &terrainType) {
   type = terrainType;
 }
 

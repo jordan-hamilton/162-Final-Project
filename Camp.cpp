@@ -75,6 +75,4 @@ void Camp::scout() {
 
   }
 
-  searched = true;
-
 }

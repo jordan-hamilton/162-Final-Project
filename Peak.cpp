@@ -36,6 +36,4 @@ void Peak::scout() {
   revealSpace( this->getSouth() );
   revealSpace( this->getWest() );
 
-  searched = true;
-
 }

@@ -76,6 +76,4 @@ void Clearing::scout() {
 
   }
 
-  searched = true;
-
 }

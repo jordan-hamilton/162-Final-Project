@@ -76,6 +76,4 @@ void Brush::scout() {
 
   }
 
-  searched = true;
-
 }

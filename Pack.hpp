@@ -15,7 +15,6 @@ class Pack {
 
   public:
     Pack();
-    ~Pack();
     void addItem(const std::string &nameIn, const int &valueIn);
     bool hasItems();
     bool hasRoom();
@@ -28,7 +27,6 @@ class Pack {
   private:
     unsigned int itemLimit;
     std::vector<Item> items;
-
     void setItemLimit(int limit);
 
 };

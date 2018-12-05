@@ -378,7 +378,7 @@ once you're ready." << endl;
 ***********************************************************************************************/
 void Game::populateItemStore() {
 
-  itemStore.push_back("Apple");
+  itemStore.push_back("Ants");
   itemStore.push_back("Berries");
   itemStore.push_back("Cattails");
   itemStore.push_back("Fish");
@@ -459,7 +459,7 @@ void Game::printScenario() {
 searching for a trapped hiker.\nYour goal is to explore the terrain in search of the trapped \
 hiker before you run out of energy.\nAs you explore, you can search your current location for \
 sustenance and try to scout out your surroundings.\nYou can also try to explore the map \
-without searching the area where you're located, but you need to search until you find your \
+without searching the area where you're located,\nbut you need to search until you find your \
 radio so you can call for help once you find the hiker. You may also become too fatigued to find \
 the missing hiker if you don't strategically choose which areas to explore.\n\nAreas:\n";
 
@@ -469,7 +469,7 @@ the same area twice.\nSearching can unearth valuable goods to replenish your ene
 allows you to continue your search.\nSearching can also reveal the radio you need to have in \
 your backpack so you can call for help once you've located the hiker.\nSurrounding areas you \
 haven't explored yet can also be revealed by searching, which can prepare you for the type of \
-terrain you'll encounter, or even allow you to spot the lost hiker if he's close.\nIf your \
+terrain you'll encounter,\nor even allow you to spot the lost hiker if he's close.\nIf your \
 backpack is too heavy from the items you collect while searching, you'll have to use some of \
 your items if you wish to continue searching.\nDifferent types of terrain take more energy to \
 traverse, so choose your path and the areas you want to search wisely.\n\n";

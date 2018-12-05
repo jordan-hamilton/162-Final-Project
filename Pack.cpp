@@ -11,11 +11,12 @@ Pack::Pack() {
 }
 
 
-Pack::~Pack() {
-
-}
-
-
+/***********************************************************************************************
+** Description: Takes a constant reference to a string for the name of an item from the game's
+** itemStore, and a constant reference to an integer representing the randomized energy value
+** associated with the scavenged item. A new item is instantiated and added to the items vector
+** to add it to the backpack.
+***********************************************************************************************/
 void Pack::addItem(const std::string &nameIn, const int &valueIn) {
 
   Item newItem(nameIn, valueIn);

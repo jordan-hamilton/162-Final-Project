@@ -9,6 +9,10 @@ Player::Player() {
 }
 
 
+/***********************************************************************************************
+** Description: Destructor that deletes dynamically allocated memory for the backpack if the
+** backpack is a valid pointer.
+***********************************************************************************************/
 Player::~Player() {
 
   if (backpack) {
@@ -52,6 +56,10 @@ void Player::restoreEnergy(const int &energyRestored) {
 }
 
 
+/***********************************************************************************************
+** Description: Returns a pointer to a pack object so the game can view the content's of the
+** player's backpack, allowing items in the pack to be used during gameplay.
+***********************************************************************************************/
 Pack* Player::getBackpack() {
   return backpack;
 }

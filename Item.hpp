@@ -16,8 +16,8 @@ class Item {
     int getValue();
 
   private:
-    void setName(std::string nameIn);
-    void setValue(int valueIn);
+    void setName(const std::string &nameIn);
+    void setValue(const int &valueIn);
     std::string name;
     int value;
 };

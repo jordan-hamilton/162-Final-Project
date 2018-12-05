@@ -18,21 +18,35 @@ Item::Item(const std::string &nameIn, const int &valueIn) {
   value = valueIn;
 }
 
+
+/***********************************************************************************************
+** Description: Returns a string for the name data member to display the name of an item in the
+** player's backpack.
+***********************************************************************************************/
 std::string Item::getName() {
   return name;
 }
 
 
+/***********************************************************************************************
+** Description: Returns an integer for the energy value of an item.
+***********************************************************************************************/
 int Item::getValue() {
   return value;
 }
 
 
-void Item::setName(std::string nameIn) {
+/***********************************************************************************************
+** Description: Takes a constant reference to a string to set the name data member for an item.
+***********************************************************************************************/
+void Item::setName(const std::string &nameIn) {
   name = nameIn;
 }
 
 
-void Item::setValue(int valueIn) {
+/***********************************************************************************************
+** Description: Takes a constant reference to an integer to set the energy value of an item.
+***********************************************************************************************/
+void Item::setValue(const int &valueIn) {
   value = valueIn;
 }

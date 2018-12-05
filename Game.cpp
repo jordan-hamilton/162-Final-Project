@@ -5,7 +5,7 @@ using std::endl;
 using std::string;
 
 /***********************************************************************************************
-** Description: Default constructor that initializes data members.
+** Description: Default constructor that initializes data members and adds options to menus.
 ***********************************************************************************************/
 Game::Game() {
 
@@ -13,6 +13,8 @@ Game::Game() {
   maxCols = 20;
   actionMenu = new Menu("What would you like to do in this area?");;
   dirMenu = new Menu("Select a direction to explore:");
+  hikerRescued  = false;
+  radioFound = false;
   populateMenus();
   player = nullptr;
   currentSpace = nullptr;
@@ -23,8 +25,8 @@ Game::Game() {
 
 /***********************************************************************************************
 ** Description: Destructor that calls delete on pointers to free dynamically allocated memory
-** for the map and player if this step has not been completed at the end of the play method.
-** Memory for Menu objects is freed is the menus are valid pointers.
+** using the endGame function if this step has not been completed at the end of the play method.
+** Memory for Menu objects is freed if the menus are valid pointers.
 ***********************************************************************************************/
 Game::~Game() {
 
@@ -43,6 +45,24 @@ Game::~Game() {
 }
 
 
+/***********************************************************************************************
+** Description: This method runs the game by first displaying the rules and objective of the
+** game, then defining a boolean to store results of player actions and an integer to store
+** the selected choice from game menus. A new player object is allocated and assigned to the
+** player data member, and a dynamically allocated 2D array of random space objects is created
+** to set the player and hiker at random spaces in the array. The itemStore vector is filled
+** with random item names that the player can collect during the game. The map is displayed to
+** the user, then a do-while loop prompts the user to move to a different space, search in the
+** current space, use an item in the backpack, or view the map again. If the player attempts to
+** move out of bounds, an error message is displayed. Otherwise, the movePlayer function is
+** passed an integer corresponding to a direction to set the player's current space to the
+** pointer associated with that direction, as long as the player's energy hasn't fallen below 0.
+** If the player tries to search in a location already set as searched, an error message is
+** displayed, otherwise, the search function is called on the currentSpace pointer. If the
+** player has no energy remaining but has found the radio, the game verifies if they have
+** any other items besides the radio and if they would still need to move to reach the hiker.
+** If so, the item is removed and the game ends.
+***********************************************************************************************/
 void Game::play() {
 
   printScenario();
@@ -127,6 +147,14 @@ void Game::play() {
 
     }
 
+    if (!player->hasEnergy() && radioFound) {
+
+      if ( player->getBackpack()->getItemCount() == 1 && !currentSpace->isHikerHere() ) {
+        player->getBackpack()->removeItem(0);
+      }
+
+    }
+
   } while( !hikerRescued && (player->hasEnergy() || player->getBackpack()->hasItems()) );
 
   if (hikerRescued) {
@@ -141,9 +169,9 @@ void Game::play() {
 
 
 /***********************************************************************************************
-** Description: This method is called if an area's seach successfully returned an item to add to
-** the player's backpack. A random item at a location itemStore is added to the player's
-** backpack with an associated value, which is used to restore energy when used by the player.
+** Description: This method is called if an area's search successfully returned an item to add
+** to the player's backpack. A random item at an index in the itemStore is added to the player's
+** backpack with a random value, which is used to restore energy when used by the player.
 ** If the random item is the radio, that item is added with a value of 0 to distinguish it from
 ** consumables and it is removed from the itemStore so it can't be added to the backpack twice.
 ** Otherwise, the item is added to the backpack using the addItem function to add an item with
@@ -160,6 +188,8 @@ void Game::addItemToBackpack() {
     player->getBackpack()->addItem( itemToAdd, 0 );
 
     itemStore.erase(itemStore.begin() + itemNumber);
+
+    radioFound = true;
 
   } else {
 
@@ -197,8 +227,11 @@ void Game::cleanMap() {
 
 
 /***********************************************************************************************
-** Description: This method randomly selects a side of the map for to start the player on, then
-** selects a random Space on that side of the map for that player to be placed to start.
+** Description: This method creates the map by creating a 2D array of space objects, randomly
+** choosing the type of inherited class for each element in the array using a switch statement.
+** If the space is not in the first row it is linked the the space above it using setNorth and
+** setSouth methods in the adjacent spaces. Similarly, spaces in adjacent columns after the
+** first column are linked using setEast and setWest methods.
 ***********************************************************************************************/
 void Game::createMap() {
 
@@ -222,7 +255,7 @@ void Game::createMap() {
                             break;
 
       }
-      // Set the north of current space to the space above it, and set south of one above to the current
+
       if (i > 0) {
         map[i][j]->setNorth(map[i - 1][j]);
         map[i - 1][j]->setSouth(map[i][j]);
@@ -244,7 +277,9 @@ void Game::createMap() {
 ** Description: This method resets the map and player at the end of the play method, so the
 ** location and energy for the player and the map layout can be reset if another game is
 ** played. The currentSpace is set to null and the itemStore is cleared so the radio can be
-** readded by playing again.
+** readded by playing again. Variables for whether the hiker was rescued and whether the radio
+** was found are reset as well, so their states aren't carried over if the player begins a new
+** game.
 ***********************************************************************************************/
 void Game::endGame() {
 
@@ -262,6 +297,7 @@ void Game::endGame() {
   itemStore.clear();
 
   hikerRescued = false;
+  radioFound = false;
 
 }
 
@@ -434,8 +470,8 @@ allows you to continue your search.\nSearching can also reveal the radio you nee
 your backpack so you can call for help once you've located the hiker.\nSurrounding areas you \
 haven't explored yet can also be revealed by searching, which can prepare you for the type of \
 terrain you'll encounter, or even allow you to spot the lost hiker if he's close.\nIf your \
-backpack is too heavy from the items you collect while searching, you'll have to use or discard \
-some items if you wish to continue searching.\nDifferent types of terrain take more energy to \
+backpack is too heavy from the items you collect while searching, you'll have to use some of \
+your items if you wish to continue searching.\nDifferent types of terrain take more energy to \
 traverse, so choose your path and the areas you want to search wisely.\n\n";
 
   string unexplored = "? - Unexplored Area\nThis area hasn't been revealed yet.\nYou reveal \

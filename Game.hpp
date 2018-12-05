@@ -42,10 +42,9 @@ class Game {
     void printStats();
     void setStartingLocation();
     void useItem();
-
     bool getHikerRescued();
     void setHikerRescued(const bool &hikerState);
-    bool hikerRescued;
+    bool hikerRescued, radioFound;
     Menu *actionMenu, *dirMenu;
     Player *player;
     Space *currentSpace;

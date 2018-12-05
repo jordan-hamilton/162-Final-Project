@@ -6,6 +6,7 @@ using std::string;
 ** Description: Default constructor that initializes data members.
 ***********************************************************************************************/
 Space::Space() {
+
   north = nullptr, east = nullptr, south = nullptr, west = nullptr;
   hikerHere = false;
   playerHere = false;
@@ -15,18 +16,28 @@ Space::Space() {
   icon ='\0';
   energyCost = 1;
   type = "";
+
 }
 
 
+/***********************************************************************************************
+** Description: Destructor for the base class. This has no effect since there are no pointers
+** we need to delete, as this is handled by the endGame function in the game.
+***********************************************************************************************/
 Space::~Space() {
 
 }
 
-
+/***********************************************************************************************
+** Description: This method calls the virtual function for scout to reveal the map, then the
+** scavenge function to have a chance to pick up an item. The searched data member is set to
+** true to prevent repeated searches in the same space.
+***********************************************************************************************/
 void Space::search() {
 
   scout();
   scavenge();
+  searched = true;
 
 }
 
@@ -36,7 +47,9 @@ void Space::search() {
 ** method verifies that the space has not been discovered by the player yet, and sets the space
 ** as discovered. If the space is a null pointer or was a valid pointer but has already been
 ** discovered by the player, the method returns false, so the search function in the inherited
-** classes can attempt to reveal a space in other directions.
+** classes can attempt to reveal a space in other directions. This returns a boolean if we
+** want to check if the attempt to reveal a space was successful, but the return value isn't
+** checked currently.
 ***********************************************************************************************/
 bool Space::revealSpace(Space* spaceToReveal) {
 
@@ -58,7 +71,7 @@ bool Space::revealSpace(Space* spaceToReveal) {
 
 /***********************************************************************************************
 ** Description: This method checks for valid pointers to the north, east, south, and west of
-** the current space, then returns an integer indicating how many of those spaces have been
+** the current space, then returns an integer indicating how many of those spaces have not been
 ** marked as discovered. This indicates the maximum number of spaces that can be revealed when
 ** searching.
 ***********************************************************************************************/
@@ -117,6 +130,11 @@ bool Space::wasItemScavenged() {
 }
 
 
+/***********************************************************************************************
+** Description: This method returns a returns a boolean for the searched data member to
+** indicate that the player already searched in their current space. This is to prevent
+** searching multiple times in the same spot and scavenging multiple items.
+***********************************************************************************************/
 bool Space::wasSearched() {
   return searched;
 }
@@ -144,11 +162,18 @@ char Space::getIcon() {
 }
 
 
+/***********************************************************************************************
+** Description: This method returns an integer indicating the cost of traversing this space.
+***********************************************************************************************/
 int Space::getEnergyCost() {
   return energyCost;
 }
 
 
+/***********************************************************************************************
+** Description: This method returns an string indicating the type of terrain that this space
+** represents, so information abotu the current location can be displayed to the user.
+***********************************************************************************************/
 string Space::getType() {
   return type;
 }
